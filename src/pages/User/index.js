@@ -46,8 +46,9 @@ export default class User extends Component {
 
   async componentDidUpdate(_, prevState) {
     const { refreshing } = this.state;
+    console.log(refreshing);
     if (prevState.refreshing !== refreshing) {
-      await this.loadMore(1, true);
+      // await this.loadMore(1, true);
     }
   }
 
@@ -64,20 +65,22 @@ export default class User extends Component {
       pageNumber = page;
     }
 
-    if (total && pageNumber > total) return;
-
     this.setState({ loading: true });
+
+    if (total && pageNumber > total) return;
 
     const { data } = await api.get(
       `/users/${user.login}/starred?per_page=5&page=${pageNumber}`
     );
 
-    this.setState({
-      stars: shouldRefresh ? data : [...stars, ...data],
-      page: pageNumber + 1,
-      loading: false,
-      refreshing: false,
-    });
+    setTimeout(() => {
+      this.setState({
+        stars: shouldRefresh ? data : [...stars, ...data],
+        page: pageNumber + 1,
+        loading: false,
+        refreshing: false,
+      });
+    }, 2000);
   };
 
   refreshList = () => {
@@ -107,9 +110,9 @@ export default class User extends Component {
         ) : (
           <Stars
             data={stars}
-            onEndReachedThreshold={0.2}
+            onEndReachedThreshold={0}
             onEndReached={() => this.loadMore()}
-            onRefresh={this.refreshList}
+            onRefresh={() => this.refreshList()}
             refreshing={refreshing}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
