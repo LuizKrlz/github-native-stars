@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { RectButton } from 'react-native-gesture-handler';
 
 export const Container = styled.View`
   flex: 1;
@@ -74,4 +75,18 @@ export const Author = styled.Text`
   font-size: 13px;
   color: #666;
   margin-top: 2px;
+`;
+
+export const Loading = styled.ActivityIndicator.attrs({
+  color: '#7159c1',
+})`
+  font-size: 20px;
+  margin-top: 20px;
+`;
+
+export const ShowButton = styled(RectButton)`
+  color: #000;
+  font-size: 12px;
+  align-items: center;
+  justify-content: center;
 `;

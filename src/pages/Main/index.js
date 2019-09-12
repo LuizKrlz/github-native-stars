@@ -22,7 +22,7 @@ import {
 
 export default class Main extends Component {
   static navigationOptions = {
-    title: 'Usuarios',
+    title: 'Usuários',
   };
 
   static propTypes = {
@@ -98,7 +98,7 @@ export default class Main extends Component {
 
           <SubmitButton onPress={this.handleAddUser}>
             {loading ? (
-              <ActivityIndicator color="#FFF" /> // loading
+              <ActivityIndicator color="#FFF" />
             ) : (
               <Icon name="add" size={20} color="#FFF" />
             )}
