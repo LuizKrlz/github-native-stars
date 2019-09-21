@@ -20,6 +20,8 @@ import {
   ProfileButtonText,
 } from './styles';
 
+import MessageAlert from '../../components/MessageAlert';
+
 export default class Main extends Component {
   static navigationOptions = {
     title: 'Usuários',
@@ -35,6 +37,7 @@ export default class Main extends Component {
     newUser: '',
     users: [],
     loading: false,
+    error: false,
   };
 
   async componentDidMount() {
@@ -53,25 +56,30 @@ export default class Main extends Component {
   }
 
   handleAddUser = async () => {
-    const { users, newUser } = this.state;
+    try {
+      const { users, newUser } = this.state;
 
-    this.setState({ loading: true });
-    const response = await api.get(`/users/${newUser}`);
+      this.setState({ loading: true });
 
-    const data = {
-      name: response.data.name,
-      login: response.data.login,
-      bio: response.data.bio,
-      avatar: response.data.avatar_url,
-    };
+      const response = await api.get(`/users/${newUser}`);
 
-    this.setState({
-      users: [...users, data],
-      newUser: '',
-      loading: false,
-    });
+      const data = {
+        name: response.data.name,
+        login: response.data.login,
+        bio: response.data.bio,
+        avatar: response.data.avatar_url,
+      };
 
-    Keyboard.dismiss();
+      this.setState({
+        users: [...users, data],
+        newUser: '',
+        loading: false,
+      });
+
+      Keyboard.dismiss();
+    } catch (error) {
+      this.setState({ error: true, loading: false, newUser: '' });
+    }
   };
 
   handleNavigate = user => {
@@ -80,8 +88,14 @@ export default class Main extends Component {
     navigation.navigate('User', { user });
   };
 
+  handleDestroyError = () => {
+    setTimeout(() => {
+      this.setState({ error: false });
+    }, 3000);
+  };
+
   render() {
-    const { users, newUser, loading } = this.state;
+    const { users, newUser, loading, error } = this.state;
 
     return (
       <Container>
@@ -104,6 +118,11 @@ export default class Main extends Component {
             )}
           </SubmitButton>
         </Form>
+        {error && (
+          <MessageAlert onDestroy={this.handleDestroyError}>
+            Usuário não encontrado.
+          </MessageAlert>
+        )}
 
         <List
           data={users}
